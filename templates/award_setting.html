@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>抽奖配置</title>
+    
+    <link rel="stylesheet" type="text/css" href="/static/boostrap/boostrap.min.css"/>   
+    <link rel="stylesheet" type="text/css" href="/static/award.css"/>
+</head>
+
+<body>
+    <script language="javascript" type="text/javascript" src="/static/boostrap/boostrap.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/static/award.js"></script>
+
+    <div class="modal fade" id="hostVerification" tabindex="-1" aria-labelledby="hostVerificationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="hostVerificationLabel">身份验证</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="row g-3" action="/check_can_do" method="get">
+              <div class="modal-body">
+                <div class="col-md-4">
+                  <label for="validationPassword" class="form-label">请输入验证码</label>
+                  <input type="text" class="form-control" id="validationPassword" name='validationPassword' value="" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary" value="Submit" onclick='savePassword()'>进行验证</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <div class="d-grid gap-3">
+        <div class="container page-header">
+            <h1 id="page_name" class="text-center">
+                请选择
+            </h1>
+            <div class="btn-group d-flex justify-content-center" role="group">
+                <button class="btn btn-outline-primary" type="button" onclick="selection_setting(1)">
+                    奖品状态与测试抽奖
+                </button>
+                <button class="btn btn-outline-primary" type="button" onclick="selection_setting(2)">
+                    重置所有状态(抽奖状态与用户池信息)
+                </button>
+                <button id="DivEditSelection" class="btn btn-outline-primary" type="button" onclick="selection_setting(3)">
+                    更新奖品配置(会更新本地配置数据)
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center" id="div_check_award">            
+            <div class="table-responsive">
+                <div id="last_draw_info"></div>
+                <div>
+                    <div id="div_draw_num" style="background-color:rosybrown;">
+                        <label style="font-weight: bold;">请输入抽奖数目:</label>
+                        <input id="submit_draw_num" style="font-weight: bold; text-align: center; color: red; font-size: larger;" type="number" value="5"></input>
+                    </div>
+                    <br>
+                    
+                    <button type="submit" class="btn btn-success btn-lg btn-block" id="BtnReadyToDraw" onclick="OnDrawPressed(DrawStage.Stage_BeforeDraw)">
+                        播放【准备抽奖界面】
+                    </button>
+                    <button type="submit" class="btn btn-danger btn-lg " id="BtnStartDraw" onclick="OnDrawPressed(DrawStage.Stage_StartDrawAnimation)">
+                        播放【正式抽奖循环动画】
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg " id="BtnCancleReadyDraw" onclick="OnCancleDrawStageToInitPressed()">
+                        取消【准备抽奖界面】
+                    </button>
+                    <br>
+                    <button type="submit" class="btn btn-danger btn-lg btn-block" id="BtnStopDrawAnimation" onclick="OnStopDrawAnimationPressed()">
+                        停止【抽奖循环动画】
+                    </button>
+                </div>
+                <br>
+                
+                <table class="table table-striped table-hover" id="check_award_table_list">
+                    <thead class="table-dark"></thead>
+                    <tbody></tbody>
+                </table>
+                
+                <div id="check_pool_or_award_info_div">
+                    <button type="submit" class="btn btn-primary" onclick="OnSelectAwardPlayerInfoPressed()">
+                        查看【抽中对应奖品用户】
+                    </button>
+                    <button type="submit" class="btn btn-primary" onclick="OnSelectPoolInfoPressed()">
+                        查看【对应用户池】用户信息
+                    </button>
+                    <button type="submit" class="btn btn-primary" onclick="OnAllInfoPressed()">
+                        提取所有奖品数据
+                    </button>
+                </div>
+                <br>
+                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#hideCharaInfo" aria-expanded="false" aria-controls="hideCharaInfo">
+                    开关抽中用户列表
+                </button>          
+                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#hideRequestInfo" aria-expanded="false" aria-controls="hideRequestInfo">
+                    开关请求详细
+                </button>             
+                <div class="collapse" id='hideCharaInfo'>
+                    <table class="table table-striped table-hover" id="check_hold_award_table_list">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>     
+        </div>
+        <div class="" id="div_init_all_status">
+            <br><br><br><br><br><br><br><br><br><br>
+            <div class="row">
+                <div class="col text-center">
+                    <button type="button" class="btn btn-danger" onclick="init_all_status()">
+                        重置状态(请谨慎使用,实际使用时非必要请别按)
+                    </button>
+                    <br><br><br><br>
+                    <button type="button" class="btn btn-primary" onclick="reproccess_all_images()">
+                        重新处理并更新所有图片
+                    </button>
+                </div>
+            </div>            
+            <div class="col text-center">
+            </div>
+        </div>
+        <div class="d-flex justify-content-center" id="div_edit_award">
+            <div class="table-responsive">
+                <button class="btn " type="button" data-bs-toggle="collapse" data-bs-target="#hideInfo" aria-expanded="false" aria-controls="hideInfo">
+                  打开说明
+                </button>
+                <div class="collapse" id='hideInfo'>
+                    <p>特别说明:</p>
+                    <p>0.一般而言,在开始抽取之后不应该进行"删除奖品",尽量只更改或添加最大数目和图片信息</p>
+                    <p>1.减少奖品数目,会影响已经抽过的奖品的剩余数目,但如果减少到少于剩余数目时,剩余数目会变成0。</p>
+                    <p>2.删除奖品,在重置所有状态之前会一直存在,所以只要添加奖品了,正式开始之后就不可以删除奖品了</p>
+                    <p>3.修改奖品时,如果输入了非数字类型,会变成0,输入时请注意</p>
+                    <p>4.多个用户池可以使用同样的用户列表！但一个用户池只能使用一个用户列表文件,在初始化的时候就绑定成功后,不能修改(除非当时配置的时候文件名字错误等导致绑定不成功),但可以添加新的文件列表</p>
+                </div>
+                <table class="table table-striped table-hover" id="update_table_list">
+                    <thead class="table-dark"></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="d-grid gap-3">
+                    <div>
+                        <button type="button" class="btn btn-secondary" onclick="check_awards_status_and_update_table('#update_table_list', true)">
+                            查看奖品状态
+                        </button>
+                        <button class="btn btn-info" onclick="add_new_row()">添加奖品</button>
+                        <button class="btn btn-danger" onclick="remove_actived_row()">删除选中行</button>
+                    </div>      
+                    <div>
+                        <button type="button" class="btn btn-danger" onclick="edit_awrd()">
+                            保存奖品信息(请谨慎使用,实际使用时非必要请别按)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse" id='hideRequestInfo'>
+            <div class="container d-flex justify-content-center">
+                <p class="text-justify" id="response_text"></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

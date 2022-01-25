@@ -1,0 +1,19 @@
+[hidden] {
+    display: none !important;
+}
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  padding: 10px;
+}
+/* td {
+    width: 50px !important;
+} */
+.cur_select {    
+    border-top: solid 2px blueviolet; 
+    border-bottom: solid 6px blueviolet;
+}​
